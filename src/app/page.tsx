@@ -67,6 +67,7 @@ export default function Home() {
              const existingProvider = providers.find(p => p.name.toLowerCase() === providerKey);
              if (!existingProvider) {
                 const newProvider: Provider = {
+                    id: new Date().toISOString() + Math.random() + providerName,
                     name: providerName,
                     address: providerAddress || '',
                     phone: providerPhone || '',
@@ -111,6 +112,22 @@ export default function Home() {
       setIsLoading(false);
     }
   };
+  
+  const handleUpdateProvider = (updatedProvider: Provider) => {
+    setProviders(providers.map(p => p.id === updatedProvider.id ? updatedProvider : p));
+    toast({
+      title: 'Provider Updated',
+      description: 'The provider details have been updated.',
+    });
+  };
+
+  const handleDeleteProvider = (providerId: string) => {
+    setProviders(providers.filter(p => p.id !== providerId));
+    toast({
+      title: 'Provider Deleted',
+      description: 'The provider has been removed.',
+    });
+  };
 
   const handleReset = () => {
     setInvoices([]);
@@ -146,7 +163,11 @@ export default function Home() {
                 <InvoiceTable invoices={invoices} setInvoices={setInvoices} onReset={handleReset} />
               </TabsContent>
               <TabsContent value="providers">
-                <ProviderDetails providers={providers} />
+                <ProviderDetails 
+                  providers={providers}
+                  onUpdateProvider={handleUpdateProvider}
+                  onDeleteProvider={handleDeleteProvider}
+                 />
               </TabsContent>
             </Tabs>
           ) : (
