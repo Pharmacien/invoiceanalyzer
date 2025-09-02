@@ -32,7 +32,7 @@ export default function Home() {
     setIsLoading(true);
     try {
       const newInvoices: Invoice[] = [];
-      const newProviders: Provider[] = [];
+      const newProvidersMap = new Map<string, Provider>();
 
       await Promise.all(files.map(async (file) => {
         try {
@@ -43,26 +43,41 @@ export default function Home() {
             assessPrivacyConcerns({ invoiceDataUri }),
           ]);
           
+          const {
+            provider: providerName,
+            providerAddress,
+            providerEmail,
+            providerPhone,
+            providerVatId,
+            providerWebsite,
+            ...invoiceDetails
+          } = extractedData;
+
           const newInvoice: Invoice = {
             id: new Date().toISOString() + Math.random(),
             file,
-            ...extractedData,
+            provider: providerName,
+            ...invoiceDetails,
             privacyAssessment,
           };
           newInvoices.push(newInvoice);
-
-          const providerExists = providers.some(p => p.name.toLowerCase() === newInvoice.provider.toLowerCase()) || newProviders.some(p => p.name.toLowerCase() === newInvoice.provider.toLowerCase());
-          if (!providerExists && newInvoice.provider) {
-            const newProvider: Provider = {
-              name: newInvoice.provider,
-              address: '',
-              phone: '',
-              email: '',
-              website: '',
-              vatId: '',
-            };
-            newProviders.push(newProvider);
+          
+          const providerKey = providerName.toLowerCase();
+          if (providerName && !newProvidersMap.has(providerKey)) {
+             const existingProvider = providers.find(p => p.name.toLowerCase() === providerKey);
+             if (!existingProvider) {
+                const newProvider: Provider = {
+                    name: providerName,
+                    address: providerAddress || '',
+                    phone: providerPhone || '',
+                    email: providerEmail || '',
+                    website: providerWebsite || '',
+                    vatId: providerVatId || '',
+                };
+                newProvidersMap.set(providerKey, newProvider);
+             }
           }
+
         } catch (error) {
             console.error('Extraction failed for one file:', error);
             toast({
@@ -72,6 +87,8 @@ export default function Home() {
             });
         }
       }));
+      
+      const newProviders = Array.from(newProvidersMap.values());
 
       if (newInvoices.length > 0) {
         setInvoices(prev => [...newInvoices, ...prev]);
@@ -129,7 +146,7 @@ export default function Home() {
                 <InvoiceTable invoices={invoices} setInvoices={setInvoices} onReset={handleReset} />
               </TabsContent>
               <TabsContent value="providers">
-                <ProviderDetails providers={providers} setProviders={setProviders} />
+                <ProviderDetails providers={providers} />
               </TabsContent>
             </Tabs>
           ) : (
