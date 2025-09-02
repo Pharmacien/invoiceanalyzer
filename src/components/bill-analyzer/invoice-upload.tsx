@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 type InvoiceUploadProps = {
-  onFileUpload: (file: File) => void;
+  onFileUpload: (files: File[]) => void;
   isLoading: boolean;
 };
 
@@ -20,15 +20,19 @@ export function InvoiceUpload({ onFileUpload, isLoading }: InvoiceUploadProps) {
     (acceptedFiles: File[], fileRejections: any[]) => {
       setIsDragging(false);
       if (fileRejections.length > 0) {
-        toast({
-          variant: 'destructive',
-          title: 'File Error',
-          description: fileRejections[0].errors[0].message,
+        fileRejections.forEach(rejection => {
+          rejection.errors.forEach((error: any) => {
+            toast({
+              variant: 'destructive',
+              title: 'File Error',
+              description: `${rejection.file.name}: ${error.message}`,
+            });
+          });
         });
         return;
       }
       if (acceptedFiles.length > 0) {
-        onFileUpload(acceptedFiles[0]);
+        onFileUpload(acceptedFiles);
       }
     },
     [onFileUpload, toast]
@@ -38,7 +42,7 @@ export function InvoiceUpload({ onFileUpload, isLoading }: InvoiceUploadProps) {
     onDrop,
     onDragEnter: () => setIsDragging(true),
     onDragLeave: () => setIsDragging(false),
-    multiple: false,
+    multiple: true,
     accept: {
       'image/jpeg': ['.jpg', '.jpeg'],
       'image/png': ['.png'],
@@ -50,9 +54,9 @@ export function InvoiceUpload({ onFileUpload, isLoading }: InvoiceUploadProps) {
   return (
     <Card className="shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl">Upload Your Bill</CardTitle>
+        <CardTitle className="text-xl">Upload Your Bills</CardTitle>
         <CardDescription>
-          Drag & drop a bill document (PDF, JPG, PNG) here, or click to select a file. Max 5MB.
+          Drag & drop bill documents (PDF, JPG, PNG) here, or click to select files. Max 5MB each.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -67,7 +71,7 @@ export function InvoiceUpload({ onFileUpload, isLoading }: InvoiceUploadProps) {
           {isLoading ? (
             <>
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="mt-4 text-sm font-medium text-muted-foreground">Analyzing your bill...</p>
+              <p className="mt-4 text-sm font-medium text-muted-foreground">Analyzing your bills...</p>
             </>
           ) : (
             <>

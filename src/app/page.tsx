@@ -28,48 +28,67 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = async (files: File[]) => {
     setIsLoading(true);
     try {
-      const invoiceDataUri = await fileToDataURI(file);
+      const newInvoices: Invoice[] = [];
+      const newProviders: Provider[] = [];
 
-      const [extractedData, privacyAssessment] = await Promise.all([
-        extractInvoiceData({ invoiceDataUri }),
-        assessPrivacyConcerns({ invoiceDataUri }),
-      ]);
-      
-      const newInvoice: Invoice = {
-        id: new Date().toISOString() + Math.random(),
-        file,
-        ...extractedData,
-        privacyAssessment,
-      };
+      await Promise.all(files.map(async (file) => {
+        try {
+          const invoiceDataUri = await fileToDataURI(file);
 
-      setInvoices(prev => [newInvoice, ...prev]);
+          const [extractedData, privacyAssessment] = await Promise.all([
+            extractInvoiceData({ invoiceDataUri }),
+            assessPrivacyConcerns({ invoiceDataUri }),
+          ]);
+          
+          const newInvoice: Invoice = {
+            id: new Date().toISOString() + Math.random(),
+            file,
+            ...extractedData,
+            privacyAssessment,
+          };
+          newInvoices.push(newInvoice);
 
-      const providerExists = providers.some(p => p.name.toLowerCase() === newInvoice.provider.toLowerCase());
-      if (!providerExists && newInvoice.provider) {
-        const newProvider: Provider = {
-          name: newInvoice.provider,
-          address: '',
-          phone: '',
-          email: '',
-          website: '',
-          vatId: '',
-        };
-        setProviders(prev => [...prev, newProvider]);
+          const providerExists = providers.some(p => p.name.toLowerCase() === newInvoice.provider.toLowerCase()) || newProviders.some(p => p.name.toLowerCase() === newInvoice.provider.toLowerCase());
+          if (!providerExists && newInvoice.provider) {
+            const newProvider: Provider = {
+              name: newInvoice.provider,
+              address: '',
+              phone: '',
+              email: '',
+              website: '',
+              vatId: '',
+            };
+            newProviders.push(newProvider);
+          }
+        } catch (error) {
+            console.error('Extraction failed for one file:', error);
+            toast({
+                variant: 'destructive',
+                title: 'Extraction Failed',
+                description: `Could not extract data from ${file.name}. Please try a different file.`,
+            });
+        }
+      }));
+
+      if (newInvoices.length > 0) {
+        setInvoices(prev => [...newInvoices, ...prev]);
+        setProviders(prev => [...newProviders, ...prev]);
+
+        toast({
+          title: 'Extraction Successful',
+          description: `${newInvoices.length} bill(s) have been processed.`,
+        });
       }
 
-      toast({
-        title: 'Extraction Successful',
-        description: `Data for ${newInvoice.provider} has been extracted.`,
-      });
     } catch (error) {
       console.error('Extraction failed:', error);
       toast({
         variant: 'destructive',
         title: 'Extraction Failed',
-        description: 'Could not extract data from the document. Please try a different file.',
+        description: 'An error occurred during the extraction process.',
       });
     } finally {
       setIsLoading(false);
