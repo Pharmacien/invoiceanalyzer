@@ -45,13 +45,12 @@ export function ProviderDetails({ providers, onUpdateProvider, onDeleteProvider 
     }
   }, [providers, selectedProvider]);
 
-  const handleCopy = () => {
-    if (!selectedProvider) return;
-    const providerData = `Name: ${selectedProvider.name}\nAddress: ${selectedProvider.address}\nPhone: ${selectedProvider.phone}\nEmail: ${selectedProvider.email}\nWebsite: ${selectedProvider.website}\nVAT ID: ${selectedProvider.vatId}`;
-    navigator.clipboard.writeText(providerData);
+  const handleCopy = (text: string, fieldName: string) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
     toast({
       title: 'Copied to Clipboard',
-      description: `${selectedProvider.name}'s details have been copied.`,
+      description: `${fieldName} has been copied.`,
     });
   };
 
@@ -120,32 +119,54 @@ export function ProviderDetails({ providers, onUpdateProvider, onDeleteProvider 
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleCopy}>
-                        <Copy className="h-4 w-4" />
-                      </Button>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="sm:col-span-2 space-y-1">
                       <Label htmlFor="address">Address</Label>
-                      <Input id="address" value={selectedProvider.address} readOnly />
+                      <div className="relative">
+                        <Input id="address" value={selectedProvider.address} readOnly className="pr-10" />
+                        <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" onClick={() => handleCopy(selectedProvider.address, 'Address')}>
+                            <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                     <div className="space-y-1">
                       <Label htmlFor="phone">Phone</Label>
-                      <Input id="phone" value={selectedProvider.phone} readOnly />
+                      <div className="relative">
+                        <Input id="phone" value={selectedProvider.phone} readOnly className="pr-10" />
+                        <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" onClick={() => handleCopy(selectedProvider.phone, 'Phone')}>
+                            <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                     <div className="space-y-1">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" value={selectedProvider.email} readOnly />
+                      <div className="relative">
+                        <Input id="email" value={selectedProvider.email} readOnly className="pr-10" />
+                        <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" onClick={() => handleCopy(selectedProvider.email, 'Email')}>
+                            <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                     <div className="space-y-1">
                       <Label htmlFor="website">Website</Label>
-                      <Input id="website" value={selectedProvider.website} readOnly />
+                      <div className="relative">
+                        <Input id="website" value={selectedProvider.website} readOnly className="pr-10" />
+                        <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" onClick={() => handleCopy(selectedProvider.website, 'Website')}>
+                            <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                     <div className="space-y-1">
                       <Label htmlFor="vatId">VAT ID</Label>
-                      <Input id="vatId" value={selectedProvider.vatId} readOnly />
+                      <div className="relative">
+                        <Input id="vatId" value={selectedProvider.vatId} readOnly className="pr-10" />
+                        <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" onClick={() => handleCopy(selectedProvider.vatId, 'VAT ID')}>
+                            <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
