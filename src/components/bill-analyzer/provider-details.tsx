@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import type { Provider } from '@/types';
-import { Building, Copy, Edit, Trash2 } from 'lucide-react';
+import { Building, Copy, Edit, ExternalLink, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -152,11 +152,35 @@ export function ProviderDetails({ providers, onUpdateProvider, onDeleteProvider 
                     </div>
                     <div className="space-y-1">
                       <Label htmlFor="website">Website</Label>
-                      <div className="relative">
-                        <Input id="website" value={selectedProvider.website} readOnly className="pr-10" />
-                        <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" onClick={() => handleCopy(selectedProvider.website, 'Website')}>
-                            <Copy className="h-4 w-4" />
-                        </Button>
+                      <div className="relative flex items-center h-10 rounded-md border border-input bg-background px-3">
+                        {selectedProvider.website ? (
+                           <a
+                           href={selectedProvider.website}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           className="flex-grow text-sm text-primary underline-offset-4 hover:underline truncate"
+                         >
+                           {selectedProvider.website}
+                         </a>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">Not available</span>
+                        )}
+                        <div className="flex-shrink-0">
+                          {selectedProvider.website && (
+                             <a
+                             href={selectedProvider.website}
+                             target="_blank"
+                             rel="noopener noreferrer"
+                           >
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <ExternalLink className="h-4 w-4" />
+                            </Button>
+                            </a>
+                          )}
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleCopy(selectedProvider.website, 'Website')}>
+                              <Copy className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                     <div className="space-y-1">
