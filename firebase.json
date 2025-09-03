@@ -3,7 +3,9 @@
     "rewrites": [
       {
         "source": "**",
-        "apphosting": "invoiceanalyzer"
+        "run": {
+          "serviceId": "invoiceanalyzer"
+        }
       }
     ]
   },
