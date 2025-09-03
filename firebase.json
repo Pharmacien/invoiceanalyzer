@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "bill-analyzer-7u3tc",
     "rewrites": [
       {
         "source": "**",
@@ -9,19 +10,5 @@
         }
       }
     ]
-  },
-  "apphosting": [
-    {
-      "backendId": "invoiceanalyzer",
-      "rootDir": "/",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "functions",
-        ".firebase"
-      ]
-    }
-  ]
+  }
 }
