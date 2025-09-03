@@ -54,6 +54,14 @@ export function ProviderDetails({ providers, onUpdateProvider, onDeleteProvider 
     });
   };
 
+  const getFullUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return `https://${url}`;
+  };
+
   return (
     <>
       <Card>
@@ -155,7 +163,7 @@ export function ProviderDetails({ providers, onUpdateProvider, onDeleteProvider 
                       <div className="relative flex items-center h-10 rounded-md border border-input bg-background px-3">
                         {selectedProvider.website ? (
                            <a
-                           href={selectedProvider.website}
+                           href={getFullUrl(selectedProvider.website)}
                            target="_blank"
                            rel="noopener noreferrer"
                            className="flex-grow text-sm text-primary underline-offset-4 hover:underline truncate"
@@ -168,7 +176,7 @@ export function ProviderDetails({ providers, onUpdateProvider, onDeleteProvider 
                         <div className="flex-shrink-0">
                           {selectedProvider.website && (
                              <a
-                             href={selectedProvider.website}
+                             href={getFullUrl(selectedProvider.website)}
                              target="_blank"
                              rel="noopener noreferrer"
                            >
