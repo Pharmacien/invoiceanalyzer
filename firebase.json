@@ -1,6 +1,11 @@
 {
   "hosting": {
-    "site": "bill-analyzer-7u3tc",
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "rewrites": [
       {
         "source": "**",
