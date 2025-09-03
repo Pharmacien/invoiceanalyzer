@@ -34,7 +34,7 @@ export default function Home() {
       const newInvoices: Invoice[] = [];
       const newProvidersMap = new Map<string, Provider>();
 
-      await Promise.all(files.map(async (file) => {
+      for (const file of files) {
         try {
           const invoiceDataUri = await fileToDataURI(file);
 
@@ -84,10 +84,10 @@ export default function Home() {
             toast({
                 variant: 'destructive',
                 title: 'Extraction Failed',
-                description: `Could not extract data from ${file.name}. Please try a different file.`,
+                description: `Could not extract data from ${file.name}. Please try again.`,
             });
         }
-      }));
+      }
       
       const newProviders = Array.from(newProvidersMap.values());
 
