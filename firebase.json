@@ -5,7 +5,7 @@
       {
         "source": "**",
         "run": {
-          "serviceId": "invoiceanalyzer",
+          "serviceId": "bill-analyzer-backend",
           "region": "europe-west4"
         }
       }
