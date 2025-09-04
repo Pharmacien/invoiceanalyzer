@@ -10,5 +10,11 @@
         }
       }
     ]
+  },
+  "apphosting": {
+    "runConfig": {
+        "maxInstances": 1
+    },
+    "ingress": "open"
   }
 }
