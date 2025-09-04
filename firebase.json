@@ -10,5 +10,14 @@
         }
       }
     ]
+  },
+  "apphosting": {
+    "backends": [
+      {
+        "id": "bill-analyzer-backend",
+        "region": "europe-west4",
+        "serviceAccount": "app-hosting-executor"
+      }
+    ]
   }
 }
